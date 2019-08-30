@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+#define BOARD_SIZE 3
 #define PLAYER_1 'x'
 #define PLAYER_2 'o'
 #define NOT_OVER 0
@@ -8,14 +9,14 @@
 #define DRAW 2
 
 void game();
-void initialize_board(char board[3][3]);
-void print_board(char board[3][3]);
-void get_move(int player, char board[3][3]);
+void initialize_board(char board[BOARD_SIZE][BOARD_SIZE]);
+void print_board(char board[BOARD_SIZE][BOARD_SIZE]);
+void get_move(int player, char board[BOARD_SIZE][BOARD_SIZE]);
 void flush_input_buffer();
-bool is_valid(char move, char board[3][3]);
+bool is_valid(char move, char board[BOARD_SIZE][BOARD_SIZE]);
 void get_move_coordinates(char move, int *coordinates);
-void update_board(int x, int y, char symbol, char board[3][3]);
-int check_win(char board[3][3], int player);
+void update_board(int x, int y, char symbol, char board[BOARD_SIZE][BOARD_SIZE]);
+int check_win(char board[BOARD_SIZE][BOARD_SIZE], int player);
 
 int main(void)
 {
@@ -40,7 +41,7 @@ void game()
 
     int player = 2;
 
-    char board[3][3];
+    char board[BOARD_SIZE][BOARD_SIZE];
     initialize_board(board);
 
     while (over == NOT_OVER)
@@ -63,7 +64,7 @@ void game()
     }
 }
 
-void initialize_board(char board[3][3])
+void initialize_board(char board[BOARD_SIZE][BOARD_SIZE])
 {
     int k = 1;
     for (int i = 0; i < 3; ++i)
@@ -73,7 +74,7 @@ void initialize_board(char board[3][3])
     }
 }
 
-void print_board(char board[3][3])
+void print_board(char board[BOARD_SIZE][BOARD_SIZE])
 {
     for (int i = 0; i < 3; ++i)
     {
@@ -89,7 +90,7 @@ void print_board(char board[3][3])
     }
 }
 
-void get_move(int player, char board[3][3])
+void get_move(int player, char board[BOARD_SIZE][BOARD_SIZE])
 {
     char move, symbol = player == 1 ? PLAYER_1 : PLAYER_2;
 
@@ -116,7 +117,7 @@ void flush_input_buffer()
         ;
 }
 
-bool is_valid(char move, char board[3][3])
+bool is_valid(char move, char board[BOARD_SIZE][BOARD_SIZE])
 {
     if (move <= '0' && move > '9')
         return false;
@@ -158,12 +159,12 @@ void get_move_coordinates(char move, int *coordinates)
     }
 }
 
-void update_board(int x, int y, char symbol, char board[3][3])
+void update_board(int x, int y, char symbol, char board[BOARD_SIZE][BOARD_SIZE])
 {
     board[y][x] = symbol;
 }
 
-int check_win(char board[3][3], int player)
+int check_win(char board[BOARD_SIZE][BOARD_SIZE], int player)
 {
     int filled = 0;
 
