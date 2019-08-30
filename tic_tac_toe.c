@@ -1,12 +1,21 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include "../C/dprint.h"
+
+#define PLAYER_1 'x'
+#define PLAYER_2 'o'
+#define NOT_OVER 0
+#define WIN 1
+#define DRAW 2
 
 void game();
 void initialize_board(char board[3][3]);
 void print_board(char board[3][3]);
 void get_move(int player, char board[3][3]);
+void flush_input_buffer();
+bool is_valid(char move, char board[3][3]);
+void get_move_coordinates(char move, int *coordinates);
 void update_board(int x, int y, char symbol, char board[3][3]);
-bool is_valid(int x, int y, char board[3][3]);
 int check_win(char board[3][3], int player);
 
 int main(void)
@@ -29,14 +38,14 @@ int main(void)
 
 void game()
 {
-    int over = 0;
+    int over = NOT_OVER;
 
     int player = 2;
 
     char board[3][3];
     initialize_board(board);
 
-    while (!over)
+    while (over == NOT_OVER)
     {
         player = player == 1 ? 2 : 1;
         print_board(board);
@@ -44,37 +53,36 @@ void game()
         over = check_win(board, player);
         printf("\n――――――――――――――――――――――――――――――――――――――――――――――\n\n");
     }
-    if (over == 1)
+    if (over == WIN)
     {
         print_board(board);
         printf("Player %d wins!\n", player);
     }
-    else if (over == 2)
+    else if (over == DRAW)
         printf("Draw!\n");
 }
 
 void initialize_board(char board[3][3])
 {
+    int k = 1;
     for (int i = 0; i < 3; ++i)
     {
         for (int j = 0; j < 3; ++j)
-            board[i][j] = ' ';
+            board[i][j] = '0' + k++;
     }
 }
 
 void print_board(char board[3][3])
 {
-    printf("      0    1    2\n     ―――――――――――――\n");
     for (int i = 0; i < 3; ++i)
     {
-        printf("%d ｜ ", i);
         for (int j = 0; j < 3; ++j)
         {
             printf(" %c", board[i][j]);
             if (j != 2)
                 printf(" ｜");
         }
-        printf("\n     ");
+        printf("\n");
         if (i != 2)
             printf("―――――――――――――\n");
     }
@@ -82,35 +90,46 @@ void print_board(char board[3][3])
 
 void get_move(int player, char board[3][3])
 {
-    char symbol = player == 1 ? 'x' : 'o';
+    char move, symbol = player == 1 ? PLAYER_1 : PLAYER_2;
 
     printf("Player %d's move\n", player);
-    printf("Where would you like to put your (%c)?\n", symbol);
-
-    int x, y;
 
     do
     {
-        printf("X coordinate: ");
-        scanf("%d", &x);
+        printf("Where would you like to put your (%c)? ", symbol);
+        move = getchar();
+        flush_input_buffer();
+    } while (!is_valid(move, board));
 
-        printf("Y coordinate: ");
-        scanf("%d", &y);
-    } while (!is_valid(x, y, board));
+    int coordinates[2];
 
-    update_board(x, y, symbol, board);
+    get_move_coordinates(move, coordinates);
+    dprint(coordinates[0]);
+    dprint(coordinates[1]);
+
+    update_board(coordinates[0], coordinates[1], symbol, board);
 }
 
-void update_board(int x, int y, char symbol, char board[3][3])
+void flush_input_buffer()
 {
-    board[y][x] = symbol;
+    char c;
+    while ((c = getchar()) != '\n')
+        ;
 }
 
-bool is_valid(int x, int y, char board[3][3])
+bool is_valid(char move, char board[3][3])
 {
-    if (x >= 0 && x <= 2 && y >= 0 && y <= 2)
+    if (move <= '0' && move > '9')
+        return false;
+
+    int coordinates[2];
+
+    get_move_coordinates(move, coordinates);
+
+    if (coordinates[0] >= 0 && coordinates[0] <= 2 && coordinates[1] >= 0 && coordinates[1] <= 2)
     {
-        if (board[y][x] == ' ')
+        char point = board[coordinates[1]][coordinates[0]];
+        if (point != PLAYER_1 && point != PLAYER_2)
             return true;
         else
             return false;
@@ -119,19 +138,45 @@ bool is_valid(int x, int y, char board[3][3])
         return false;
 }
 
+void get_move_coordinates(char move, int *coordinates)
+{
+    int int_move = move - '0';
+
+    if (int_move <= 3)
+    {
+        coordinates[0] = int_move - 1;
+        coordinates[1] = 0;
+    }
+    else if (int_move <= 6)
+    {
+        coordinates[0] = int_move - 4;
+        coordinates[1] = 1;
+    }
+    else
+    {
+        coordinates[0] = int_move - 7;
+        coordinates[1] = 2;
+    }
+}
+
+void update_board(int x, int y, char symbol, char board[3][3])
+{
+    board[y][x] = symbol;
+}
+
 int check_win(char board[3][3], int player)
 {
     int filled = 0;
 
-    char symbol = player == 1 ? 'x' : 'o';
+    char symbol = player == 1 ? PLAYER_1 : PLAYER_2;
 
     // Check top-left - bottom-right diagonal
     if (board[0][0] == symbol && board[1][1] == symbol && board[2][2] == symbol)
-        return 1;
+        return WIN;
 
     // Check top-right - bottom-left diagonal
     else if (board[0][2] == symbol && board[1][1] == symbol && board[2][0] == symbol)
-        return 1;
+        return WIN;
 
     else
     {
@@ -139,20 +184,20 @@ int check_win(char board[3][3], int player)
         {
             // Check horizontal
             if (board[i][0] == symbol && board[i][1] == symbol && board[i][2] == symbol)
-                return 1;
+                return WIN;
             // Check vertical
             else if (board[0][i] == symbol && board[1][i] == symbol && board[2][i] == symbol)
-                return 1;
+                return WIN;
         }
     }
 
     for (int i = 0; i < 3; ++i)
         for (int j = 0; j < 3; ++j)
-            if (board[i][j] != ' ')
+            if (board[i][j] == PLAYER_1 || board[i][j] == PLAYER_2)
                 ++filled;
 
     if (filled == 9)
-        return 2;
+        return DRAW;
 
-    return false;
+    return NOT_OVER;
 }
