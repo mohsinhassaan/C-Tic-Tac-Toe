@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdbool.h>
-#include "../C/dprint.h"
 
 #define PLAYER_1 'x'
 #define PLAYER_2 'o'
