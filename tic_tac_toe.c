@@ -23,12 +23,11 @@ int main(void)
     do
     {
         game();
-        while ((getchar()) != '\n')
-            ;
         do
         {
             printf("Would you like to play again (y/n)? ");
-            scanf("%c", &again);
+            again = getchar();
+            flush_input_buffer();
             printf("\n");
         } while (again != 'y' && again != 'n');
 
@@ -55,10 +54,13 @@ void game()
     if (over == WIN)
     {
         print_board(board);
-        printf("Player %d wins!\n", player);
+        printf("\nPlayer %d wins!\n", player);
     }
     else if (over == DRAW)
-        printf("Draw!\n");
+    {
+        print_board(board);
+        printf("\nDraw!\n");
+    }
 }
 
 void initialize_board(char board[3][3])
@@ -91,7 +93,7 @@ void get_move(int player, char board[3][3])
 {
     char move, symbol = player == 1 ? PLAYER_1 : PLAYER_2;
 
-    printf("Player %d's move\n", player);
+    printf("\nPlayer %d's move\n", player);
 
     do
     {
@@ -103,8 +105,6 @@ void get_move(int player, char board[3][3])
     int coordinates[2];
 
     get_move_coordinates(move, coordinates);
-    dprint(coordinates[0]);
-    dprint(coordinates[1]);
 
     update_board(coordinates[0], coordinates[1], symbol, board);
 }
