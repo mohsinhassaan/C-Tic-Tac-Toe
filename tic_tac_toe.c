@@ -2,8 +2,8 @@
 #include <stdbool.h>
 
 #define BOARD_SIZE 3
-#define PLAYER_1 'x'
-#define PLAYER_2 'o'
+#define PLAYER_1 'X'
+#define PLAYER_2 'O'
 #define NOT_OVER 0
 #define WIN 1
 #define DRAW 2
