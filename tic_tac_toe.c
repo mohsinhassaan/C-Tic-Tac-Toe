@@ -1,22 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
-
-#define BOARD_SIZE 3
-#define PLAYER_1 'X'
-#define PLAYER_2 'O'
-#define NOT_OVER 0
-#define WIN 1
-#define DRAW 2
-
-void game();
-void initialize_board(char board[BOARD_SIZE][BOARD_SIZE]);
-void print_board(char board[BOARD_SIZE][BOARD_SIZE]);
-void get_move(int player, char board[BOARD_SIZE][BOARD_SIZE]);
-void flush_input_buffer();
-bool is_valid(char move, char board[BOARD_SIZE][BOARD_SIZE]);
-void get_move_coordinates(char move, int *coordinates);
-void update_board(int x, int y, char symbol, char board[BOARD_SIZE][BOARD_SIZE]);
-int check_win(char board[BOARD_SIZE][BOARD_SIZE], int player);
+#include <stdlib.h>
+#include "tic_tac_toe.h"
 
 int main(void)
 {
@@ -46,9 +31,11 @@ void game()
 
     while (over == NOT_OVER)
     {
-        player = player == 1 ? 2 : 1;
+        player = player % 2 + 1;
         print_board(board);
-        get_move(player, board);
+        int *coordinates = get_player_move(player, board);
+        update_board(coordinates[0], coordinates[1], get_symbol(player), board);
+        free(coordinates);
         over = check_win(board, player);
         printf("\n――――――――――――――――――――――――――――――――――――――――――――――\n\n");
     }
@@ -90,9 +77,9 @@ void print_board(char board[BOARD_SIZE][BOARD_SIZE])
     }
 }
 
-void get_move(int player, char board[BOARD_SIZE][BOARD_SIZE])
+int *get_player_move(int player, char board[BOARD_SIZE][BOARD_SIZE])
 {
-    char move, symbol = player == 1 ? PLAYER_1 : PLAYER_2;
+    char move, symbol = get_symbol(player);
 
     printf("\nPlayer %d's move\n", player);
 
@@ -103,11 +90,11 @@ void get_move(int player, char board[BOARD_SIZE][BOARD_SIZE])
         flush_input_buffer();
     } while (!is_valid(move, board));
 
-    int coordinates[2];
+    int *coordinates = malloc(2 * sizeof(int));
 
     get_move_coordinates(move, coordinates);
 
-    update_board(coordinates[0], coordinates[1], symbol, board);
+    return coordinates;
 }
 
 void flush_input_buffer()
