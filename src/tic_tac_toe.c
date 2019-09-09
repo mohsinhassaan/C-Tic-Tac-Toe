@@ -1,7 +1,5 @@
 #include <stdio.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include "tic_tac_toe.h"
+#include <tic_tac_toe.h>
 
 int main(void)
 {

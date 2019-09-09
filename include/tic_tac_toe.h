@@ -1,3 +1,6 @@
+#include <stdbool.h>
+#include <stdlib.h>
+
 #define BOARD_SIZE 3
 #define PLAYER_1 'X'
 #define PLAYER_2 'O'
