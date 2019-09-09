@@ -4,4 +4,4 @@
 Tic-Tac-Toe written in C.
 
 ## Installation
-Compile with a C compiler and execute the binary file.
+Run 'make' to compile
