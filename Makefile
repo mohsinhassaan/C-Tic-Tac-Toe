@@ -14,13 +14,19 @@ OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 $(ODIR)/%.o: $(SRCDIR)/%.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-tic_tac_toe: mkfolders
-	$(CC) -o $(BINDIR)/$@ $(OBJ) $(CFLAGS) $(LIBS)
+build: mkobj mkbin tic_tac_toe
 
-mkfolders:
-	mkdir -p $(ODIR) $(BINDIR)
+mkobj:
+	mkdir -p $(ODIR)
+
+mkbin:
+	mkdir -p $(BINDIR)
+
+tic_tac_toe: $(OBJ)
+	$(CC) -o $(BINDIR)/$@ $< $(CFLAGS) $(LIBS)
 
 .PHONY: clean
 
 clean:
 	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ 
+
