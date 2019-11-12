@@ -14,8 +14,11 @@ OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 $(ODIR)/%.o: $(SRCDIR)/%.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-tic_tac_toe: $(OBJ)
-	$(CC) -o $(BINDIR)/$@ $^ $(CFLAGS) $(LIBS)
+tic_tac_toe: mkfolders
+	$(CC) -o $(BINDIR)/$@ $(OBJ) $(CFLAGS) $(LIBS)
+
+mkfolders:
+	mkdir -p $(ODIR) $(BINDIR)
 
 .PHONY: clean
 
