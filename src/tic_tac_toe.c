@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <tic_tac_toe.h>
 
 int main(void)
@@ -61,11 +62,16 @@ void initialize_board(char board[BOARD_SIZE][BOARD_SIZE])
 
 void print_board(char board[BOARD_SIZE][BOARD_SIZE])
 {
+    printf("\e[1;1H\e[2J");
     for (int i = 0; i < 3; ++i)
     {
         for (int j = 0; j < 3; ++j)
         {
-            printf(" %c", board[i][j]);
+            if (board[i][j] == PLAYER_1)
+                printf(P1_COLOR);
+            else if (board[i][j] == PLAYER_2)
+                printf(P2_COLOR);
+            printf(" %c" DEFAULT_COLOR, board[i][j]);
             if (j != 2)
                 printf(" ｜");
         }
@@ -81,15 +87,17 @@ int *get_player_move(int player, char board[BOARD_SIZE][BOARD_SIZE])
 
     printf("\nPlayer %d's move\n", player);
 
+    char *movestr = malloc(255 * sizeof(char));
     do
     {
         printf("Where would you like to put your (%c)? ", symbol);
-        move = getchar();
+        scanf("%s", movestr);
+        move = strlen(movestr) == 1 ? atoi(movestr) + '0' : '0';
         flush_input_buffer();
     } while (!is_valid(move, board));
 
+    free(movestr);
     int *coordinates = malloc(2 * sizeof(int));
-
     get_move_coordinates(move, coordinates);
 
     return coordinates;

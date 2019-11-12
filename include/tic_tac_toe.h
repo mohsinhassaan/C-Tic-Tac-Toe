@@ -7,6 +7,9 @@
 #define NOT_OVER 0
 #define WIN 1
 #define DRAW 2
+#define P1_COLOR "\e[31m"
+#define P2_COLOR "\e[34m"
+#define DEFAULT_COLOR "\e[0m"
 
 #define get_symbol(player) player == 1 ? PLAYER_1 : PLAYER_2
 
