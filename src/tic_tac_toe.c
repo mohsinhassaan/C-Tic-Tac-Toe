@@ -14,9 +14,9 @@ int main(void)
             again = getchar();
             flush_input_buffer();
             printf("\n");
-        } while (again != 'y' && again != 'n');
+        } while (again != 'y' && again != 'Y' && again != 'n' && again != 'N');
 
-    } while (again == 'y');
+    } while (again == 'y' || again == 'Y');
 }
 
 void game()
